@@ -1,0 +1,25 @@
+[project]
+name = "edgetrans"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "am230", email = "111672334+am230@users.noreply.github.com" }
+]
+dependencies = [
+    "aiohttp>=3.9.3",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pytest-asyncio>=0.23.4",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
