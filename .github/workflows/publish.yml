@@ -19,16 +19,15 @@ jobs:
           python-version: "3.x"
       - name: Install rye
         uses: eifinger/setup-rye@v1
-      - name: Install dependencies
-        run: |
-          rye sync
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
           path: |
             $HOME/.rye
-            .venv
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.lock') }}
+      - name: Install dependencies
+        run: |
+          rye sync
       - name: Build
         run: |
           rye build
