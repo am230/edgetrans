@@ -1,7 +1,7 @@
 # https://docs.pypi.org/trusted-publishers/using-a-publisher/
 name: PyPI
 
-on: [push]
+on: workflow_dispatch
 
 jobs:
   deploy:
@@ -23,6 +23,11 @@ jobs:
       - name: Install dependencies
         run: |
           rye sync
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.lock') }}
       - name: Build
         run: |
           rye build --all
