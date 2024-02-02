@@ -18,8 +18,9 @@ jobs:
       - name: Install rye
         uses: eifinger/setup-rye@v1
         with:
-          enable-cache: true
           version: "0.19.0"
+          enable-cache: true
+          cache-prefix: "rye"
       - name: Install dependencies
         run: |
           rye sync
