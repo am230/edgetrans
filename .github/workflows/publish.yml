@@ -6,6 +6,9 @@ on: [push]
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
@@ -13,7 +16,9 @@ jobs:
         with:
           python-version: "3.x"
       - name: Install rye
-        uses: eifinger/setup-rye@v1.10.0
+        uses: eifinger/setup-rye@v1
+        with:
+          version: "0.15.2"
       - name: Install dependencies
         run: |
           rye sync
