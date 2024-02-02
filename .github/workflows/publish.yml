@@ -1,0 +1,34 @@
+# https://docs.pypi.org/trusted-publishers/using-a-publisher/
+
+name: PyPI
+
+on: workflow_dispatch
+
+jobs:
+  deploy:
+    name: upload release to PyPI
+    runs-on: ubuntu-latest
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.x"
+      - name: Install rye
+        uses: eifinger/setup-rye@v1
+      - name: Install dependencies
+        run: |
+          rye sync
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path:
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.lock') }}
+      - name: Build
+        run: |
+          rye build
+      - name: Publish a Python distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
