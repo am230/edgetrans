@@ -34,7 +34,7 @@ jobs:
           rye sync
       - name: Run tests
         run: |
-          rye run pytest --cov api.calculator
+          rye run pytest --cov
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         env:
