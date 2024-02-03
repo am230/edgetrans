@@ -1,6 +1,6 @@
 # https://docs.pypi.org/trusted-publishers/using-a-publisher/
 
-name: PyPI
+name: test
 
 on: [push]
 
