@@ -5,7 +5,7 @@ name: test
 on: [push]
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
     permissions:
       # IMPORTANT: this permission is mandatory for trusted publishing
