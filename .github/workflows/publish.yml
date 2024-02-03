@@ -21,14 +21,16 @@ jobs:
           version: "0.19.0"
           enable-cache: true
           cache-prefix: "rye"
-      - name: Install dependencies
-        run: |
-          rye sync
       - name: Cache dependencies
+        id: cache
         uses: actions/cache@v4
         with:
           path: .venv
           key: pip-${{ runner.os }}-${{ hashFiles('**/requirements.lock') }}
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          rye sync
       - name: Build
         run: |
           rye build --all
