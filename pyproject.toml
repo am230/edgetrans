@@ -19,6 +19,7 @@ build-backend = "hatchling.build"
 managed = true
 dev-dependencies = [
     "pytest-asyncio>=0.23.4",
+    "pytest-cov>=4.1.0",
 ]
 
 [tool.hatch.metadata]

@@ -1,0 +1,36 @@
+# https://docs.pypi.org/trusted-publishers/using-a-publisher/
+
+name: PyPI
+
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.x"
+      - name: Install rye
+        uses: eifinger/setup-rye@v1
+        with:
+          version: "0.19.0"
+          enable-cache: true
+          cache-prefix: "rye"
+      - name: Install dependencies
+        run: |
+          rye sync
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: pip-${{ runner.os }}-${{ hashFiles('**/requirements.lock') }}
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
