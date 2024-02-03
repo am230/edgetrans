@@ -9,9 +9,11 @@ from .translator import Language, Translator
 class Translation(TypedDict):
     text: str
     to: Language
+    sentLen: dict[str, list[int]]
 
 
-class Response(TypedDict):
+class TranslationResponse(TypedDict):
+    detectedLanguage: dict[str, str | float]
     translations: list[Translation]
 
 
@@ -39,8 +41,13 @@ class EdgeTranslator(Translator):
         return cls(session, auth_key)
 
     async def translate(
-        self, to_lang: Language, *parts: str, from_lang: Language | None = None
+        self,
+        parts: str | list[str],
+        to_lang: Language,
+        from_lang: Language | None = None,
     ) -> list[Tuple[str, Language]]:
+        if isinstance(parts, str):
+            parts = [parts]
         url = "https://api-edge.cognitive.microsofttranslator.com/translate"
         headers = {"Authorization": f"Bearer {self._auth_key}"}
         texts = [{"Text": part} for part in parts]
@@ -48,13 +55,19 @@ class EdgeTranslator(Translator):
             "from": from_lang or "",
             "to": to_lang,
             "api-version": "3.0",
+            "includeSentenceLength": "true",
         }
         async with self._session.post(
             url, headers=headers, params=params, json=texts
         ) as resp:
             if resp.status != 200:
                 raise TranslationError(await resp.text())
-            data: list[Response] = await resp.json()
-        if len(data) != 1:
-            raise TranslationError("Unexpected response")
-        return [(part["text"], part["to"]) for part in data[0]["translations"]]
+            data: list[TranslationResponse] = await resp.json()
+        result = []
+        for item in data:
+            detected_lang = from_lang or item["detectedLanguage"]["language"]
+            translations = item["translations"]
+            for translation in translations:
+                text = translation["text"]
+                result.append((text, detected_lang))
+        return result

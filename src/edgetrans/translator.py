@@ -9,6 +9,9 @@ type Language = Literal[
 class Translator(abc.ABC):
     @abc.abstractmethod
     async def translate(
-        self, to_lang: Language, *parts: str, from_lang: Language | None = None
+        self,
+        parts: str | list[str],
+        to_lang: Language,
+        from_lang: Language | None = None,
     ) -> list[Tuple[str, Language]]:
         ...

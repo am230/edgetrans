@@ -6,7 +6,7 @@ from edgetrans import EdgeTranslator
 @pytest.mark.asyncio
 async def test_translate():
     translator = await EdgeTranslator.create()
-    response = await translator.translate("ja", "hello", from_lang="en")
+    response = await translator.translate("hello", "ja", from_lang="en")
     assert len(response) == 1
     text, lang = response[0]
     assert text == "こんにちは"
