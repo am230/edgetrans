@@ -1,3 +1,4 @@
+import time
 from typing import Tuple, TypedDict
 
 import aiohttp
@@ -40,11 +41,16 @@ class EdgeTranslator(Translator):
         auth_key = auth_key or await cls.fetch_auth_key(session)
         return cls(session, auth_key)
 
+    async def auth(self, /) -> str:
+        self._auth_key = await self.fetch_auth_key(self._session)
+        return self._auth_key
+
     async def translate(
         self,
         parts: str | list[str],
         to_lang: Language,
         from_lang: Language | None = None,
+        retry: int = 3,
     ) -> list[Tuple[str, Language]]:
         if isinstance(parts, str):
             parts = [parts]
@@ -61,6 +67,10 @@ class EdgeTranslator(Translator):
             url, headers=headers, params=params, json=texts
         ) as resp:
             if resp.status != 200:
+                # raise TranslationError(await resp.text())
+                if retry > 0:
+                    await self.auth()
+                    return await self.translate(parts, to_lang, from_lang, retry - 1)
                 raise TranslationError(await resp.text())
             data: list[TranslationResponse] = await resp.json()
         result = []
