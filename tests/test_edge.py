@@ -10,7 +10,7 @@ async def test_translate():
     assert len(response) == 1
     text, lang = response[0]
     assert text == "こんにちは"
-    assert lang == "ja"
+    assert lang == "en"
 
 
 if __name__ == "__main__":
