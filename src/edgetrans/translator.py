@@ -13,5 +13,5 @@ class Translator(abc.ABC):
         parts: str | list[str],
         to_lang: Language,
         from_lang: Language | None = None,
-    ) -> list[Tuple[str, Language]]:
+    ) -> list[Tuple[str, Language | None]]:
         ...

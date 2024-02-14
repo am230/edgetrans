@@ -1,4 +1,3 @@
-import time
 from typing import Tuple, TypedDict
 
 import aiohttp
@@ -51,9 +50,11 @@ class EdgeTranslator(Translator):
         to_lang: Language,
         from_lang: Language | None = None,
         retry: int = 3,
-    ) -> list[Tuple[str, Language]]:
+    ) -> list[Tuple[str, Language | None]]:
         if isinstance(parts, str):
             parts = [parts]
+        if len(parts) == 0:
+            return []
         url = "https://api-edge.cognitive.microsofttranslator.com/translate"
         headers = {"Authorization": f"Bearer {self._auth_key}"}
         texts = [{"Text": part} for part in parts]
