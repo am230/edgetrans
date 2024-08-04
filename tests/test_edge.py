@@ -27,5 +27,14 @@ async def test_empty_translate():
     assert response == []
 
 
+@pytest.mark.asyncio
+async def test_detect():
+    translator = await EdgeTranslator.create()
+    response = await translator.translate("hello", "ja")
+    assert len(response) == 1
+    _, lang = response[0]
+    assert lang == "en"
+
+
 if __name__ == "__main__":
     pytest.main()
